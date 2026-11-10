@@ -1,0 +1,33 @@
+# ==========================================================
+# .htaccess — à uploader à la racine de htdocs/ (même dossier qu'index.html)
+# Rend le lancement automatique fiable sur un hébergement mutualisé comme
+# InfinityFree : bon fichier servi par défaut, bon type MIME pour les
+# modules JS (sans quoi certains hébergeurs servent les .js en text/plain
+# et le navigateur refuse de les exécuter comme modules — page blanche).
+# ==========================================================
+
+DirectoryIndex index.html index.php
+
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/css .css
+</IfModule>
+
+# Empêche l'affichage du contenu d'un dossier si index.html est absent
+Options -Indexes
+
+# Bloque l'accès direct aux fichiers sensibles (config.php contient les
+# identifiants MySQL ; schema.sql et les .md ne sont utiles qu'en local)
+<FilesMatch "^(config\.php|config\.example\.php|schema\.sql|README\.md|MIGRATION\.md|package\.json)$">
+  Require all denied
+</FilesMatch>
+
+# Redirige automatiquement vers HTTPS (InfinityFree fournit un certificat
+# gratuit) — évite un mélange http/https qui peut bloquer les requêtes
+# fetch() de l'app vers api.php
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP_HOST} !^localhost
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>

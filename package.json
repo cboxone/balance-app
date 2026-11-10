@@ -1,0 +1,13 @@
+{
+  "name": "balance-gestion-commerciale",
+  "private": true,
+  "type": "module",
+  "description": "Application de gestion commerciale — architecture modulaire, aucun outil de build requis pour l'app elle-même (modules ES natifs du navigateur). jsdom n'est utilisé que par le harnais de test optionnel dans tools/.",
+  "scripts": {
+    "check": "find js -name \"*.js\" -exec node --check {} \\; && python3 tools/check_imports.py",
+    "test:boot": "node --import ./tools/preload-dom.mjs ./tools/browser-sim.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.0"
+  }
+}
